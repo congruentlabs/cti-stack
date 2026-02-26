@@ -1,4 +1,4 @@
-{{- if .Values.components.azul }}
+{{- if .Values.apps.azul }}
 {{ include "cti-stack.application" (dict
   "name" "cti-azul-prereqs"
   "wave" "6"

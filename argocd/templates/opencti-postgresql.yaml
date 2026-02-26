@@ -1,4 +1,4 @@
-{{- if .Values.components.openctiPostgresql }}
+{{- if .Values.apps.opencti }}
 {{ include "cti-stack.application" (dict
   "name" "cti-opencti-postgresql"
   "wave" "4"

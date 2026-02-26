@@ -1,4 +1,4 @@
-{{- if .Values.components.rabbitmq }}
+{{- if .Values.apps.opencti }}
 {{ include "cti-stack.application" (dict
   "name" "cti-rabbitmq"
   "wave" "4"

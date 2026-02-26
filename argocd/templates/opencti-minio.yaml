@@ -1,4 +1,4 @@
-{{- if .Values.components.openctiMinio }}
+{{- if .Values.apps.opencti }}
 {{ include "cti-stack.application" (dict
   "name" "cti-opencti-minio"
   "wave" "4"

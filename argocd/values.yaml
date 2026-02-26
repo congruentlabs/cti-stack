@@ -52,25 +52,12 @@ azul:
   ## Set to true after initial deployment succeeds to enable plugins
   pluginsEnabled: false
 
-## Component toggles (set false to skip deploying a component)
-components:
-  certManager: true
-  ingressNginx: true
-  clusterIssuer: true
-  postgresqlOperator: true
-  postgresql: true              # Keycloak-only PostgreSQL
-  opensearchOperator: true
-  azulOpensearch: true
-  openctiOpensearch: true
-  azulMinio: true
-  openctiMinio: true
-  openctiPostgresql: true
-  mobsfPostgresql: true
-  kafka: true
-  redis: true
-  rabbitmq: true
-  keycloak: true
-  monitoring: true
-  azul: true
-  opencti: true
-  mobsf: true
+## Application toggles
+## Enable/disable each application and its dedicated data services.
+## Core infrastructure (cert-manager, ingress, Keycloak, monitoring, operators)
+## is always deployed. Per-app data services are deployed automatically when
+## their consuming application is enabled.
+apps:
+  azul: true       # + azul-opensearch, azul-minio, kafka
+  opencti: true    # + opencti-opensearch, opencti-minio, opencti-postgresql, redis, rabbitmq
+  mobsf: true      # + mobsf-postgresql

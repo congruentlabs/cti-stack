@@ -1,4 +1,4 @@
-{{- if .Values.components.mobsfPostgresql }}
+{{- if .Values.apps.mobsf }}
 {{ include "cti-stack.application" (dict
   "name" "cti-mobsf-postgresql"
   "wave" "4"

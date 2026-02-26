@@ -1,4 +1,4 @@
-{{- if .Values.components.azulOpensearch }}
+{{- if .Values.apps.azul }}
 {{ include "cti-stack.application" (dict
   "name" "cti-azul-opensearch"
   "wave" "4"

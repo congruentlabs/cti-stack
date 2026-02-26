@@ -1,4 +1,4 @@
-{{- if .Values.components.mobsf }}
+{{- if .Values.apps.mobsf }}
 {{ include "cti-stack.application" (dict
   "name" "cti-mobsf"
   "wave" "7"

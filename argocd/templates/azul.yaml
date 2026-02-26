@@ -1,4 +1,4 @@
-{{- if .Values.components.azul }}
+{{- if .Values.apps.azul }}
 {{- /*
   Wave 7: Azul application.
   Uses ArgoCD multi-source: upstream Azul chart + local values overlay.

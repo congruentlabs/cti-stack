@@ -1,4 +1,4 @@
-{{- if .Values.components.redis }}
+{{- if .Values.apps.opencti }}
 {{ include "cti-stack.application" (dict
   "name" "cti-redis"
   "wave" "4"

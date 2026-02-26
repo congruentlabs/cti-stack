@@ -1,4 +1,3 @@
-{{- if .Values.components.ingressNginx }}
 {{ include "cti-stack.application" (dict
   "name" "cti-ingress-nginx"
   "wave" "1"
@@ -6,4 +5,3 @@
   "chart" "charts/ingress-nginx"
   "context" $
 ) }}
-{{- end }}

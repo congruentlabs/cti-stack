@@ -1,4 +1,4 @@
-{{- if .Values.components.kafka }}
+{{- if .Values.apps.azul }}
 {{ include "cti-stack.application" (dict
   "name" "cti-kafka"
   "wave" "4"

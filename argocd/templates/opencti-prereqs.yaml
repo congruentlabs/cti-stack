@@ -1,4 +1,4 @@
-{{- if .Values.components.opencti }}
+{{- if .Values.apps.opencti }}
 {{ include "cti-stack.application" (dict
   "name" "cti-opencti-prereqs"
   "wave" "6"

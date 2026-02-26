@@ -1,4 +1,3 @@
-{{- if .Values.components.postgresql }}
 {{ include "cti-stack.application" (dict
   "name" "cti-postgresql"
   "wave" "4"
@@ -6,4 +5,3 @@
   "chart" "charts/postgresql"
   "context" $
 ) }}
-{{- end }}
