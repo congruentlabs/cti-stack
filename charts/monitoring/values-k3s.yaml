@@ -1,0 +1,25 @@
+kube-prometheus-stack:
+  prometheus:
+    prometheusSpec:
+      retention: 7d
+      resources:
+        requests:
+          memory: 1Gi
+        limits:
+          memory: 2Gi
+      storageSpec:
+        volumeClaimTemplate:
+          spec:
+            storageClassName: local-path
+  grafana:
+    resources:
+      requests:
+        memory: 256Mi
+      limits:
+        memory: 512Mi
+
+loki:
+  singleBinary:
+    replicas: 1
+    persistence:
+      storageClass: local-path

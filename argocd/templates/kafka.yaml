@@ -1,0 +1,9 @@
+{{- if .Values.components.kafka }}
+{{ include "cti-stack.application" (dict
+  "name" "cti-kafka"
+  "wave" "4"
+  "namespace" .Values.namespaces.infra
+  "chart" "charts/kafka"
+  "context" $
+) }}
+{{- end }}

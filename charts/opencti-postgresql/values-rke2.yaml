@@ -1,0 +1,11 @@
+cluster:
+  instances: 3
+  storage:
+    storageClass: longhorn
+    size: 20Gi
+  resources:
+    requests:
+      memory: 1Gi
+      cpu: 500m
+    limits:
+      memory: 2Gi

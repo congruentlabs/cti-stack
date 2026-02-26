@@ -1,0 +1,9 @@
+ca:
+  # Name of the CA ClusterIssuer
+  issuerName: cti-ca-issuer
+  # Root CA certificate common name
+  commonName: CTI Stack Root CA
+  # Root CA duration (10 years)
+  duration: 87600h
+  # Root CA renew before (1 year)
+  renewBefore: 8760h

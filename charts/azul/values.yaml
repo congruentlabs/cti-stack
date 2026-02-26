@@ -1,0 +1,62 @@
+## Azul values overlay — used with ArgoCD multi-source against the upstream
+## AustralianCyberSecurityCentre/azul-app Helm chart.
+
+## Trust the CTI Stack internal CA for all TLS connections
+CACertificateConfigMap: "azul-ca-cert"
+
+## Bundled Redis (Azul uses its own, not the shared cti-infra Redis)
+redis:
+  enabled: true
+
+## External infrastructure — shared CTI Stack services
+external:
+  opensearch:
+    endpoint: "https://azul-opensearch.cti-azul.svc:9200"
+    username: azul_writer
+
+  filestore:
+    backend: s3
+    endpoint: "azul-minio.cti-azul.svc:9000"
+    secure: true
+
+  kafka:
+    endpoint: "cti-kafka-kafka-bootstrap.cti-infra.svc:9093"
+
+  redis:
+    endpoint: "azul-redis-master:6379"
+
+## Secrets — names match the K8s secrets created by azul-prereqs
+secrets:
+  filestore: s3-keys
+  metastoreCreds: metastore-creds
+
+## OIDC via Keycloak
+security:
+  oidc:
+    enabled: true
+    authority_url: "https://keycloak.cti.local/realms/cti"
+    client_id: azul
+
+## Web ingress
+web:
+  ingress:
+    enabled: true
+    className: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: cti-ca-issuer
+    hosts:
+      - azul.cti.local
+    tls:
+      - secretName: azul-tls
+        hosts:
+          - azul.cti.local
+
+## Namespace is managed by ArgoCD, not the chart
+namespace:
+  create: false
+  secure: false
+
+## At least one source must be enabled
+sources:
+  manual:
+    enabled: true

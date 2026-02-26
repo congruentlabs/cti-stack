@@ -1,0 +1,4 @@
+apiVersion: v2
+name: opencti-prereqs
+description: Prerequisites (secrets/config) for OpenCTI deployment
+version: 0.1.0

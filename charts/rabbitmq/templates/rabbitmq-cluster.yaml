@@ -1,0 +1,26 @@
+apiVersion: rabbitmq.com/v1beta1
+kind: RabbitmqCluster
+metadata:
+  name: {{ .Values.cluster.name }}
+  labels:
+    app.kubernetes.io/name: rabbitmq
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.cluster.replicas }}
+  image: {{ .Values.cluster.image }}
+  resources:
+    requests:
+      memory: {{ .Values.cluster.resources.requests.memory }}
+      cpu: {{ .Values.cluster.resources.requests.cpu | quote }}
+    limits:
+      memory: {{ .Values.cluster.resources.limits.memory }}
+  persistence:
+    storageClassName: {{ .Values.cluster.persistence.storageClass | quote }}
+    storage: {{ .Values.cluster.persistence.storage }}
+  rabbitmq:
+    additionalConfig: |
+      {{- .Values.cluster.rabbitmq.additionalConfig | nindent 6 }}
+  {{- if .Values.tls.enabled }}
+  tls:
+    secretName: {{ .Values.tls.secretName }}
+  {{- end }}

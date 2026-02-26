@@ -1,0 +1,13 @@
+global:
+  baseDomain: cti.local
+
+secrets:
+  s3:
+    accessKey: CHANGE_ME
+    secretKey: CHANGE_ME
+  metastore:
+    writerPassword: CHANGE_ME
+    jwtSigningSecret: CHANGE_ME
+    securityPassword: CHANGE_ME
+
+caCert: CHANGE_ME

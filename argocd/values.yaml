@@ -1,0 +1,76 @@
+## Global settings for CTI Stack App-of-Apps
+global:
+  ## Cluster profile: "k3s" or "rke2"
+  clusterProfile: k3s
+
+  ## Base domain for all ingresses (e.g., cti.example.com)
+  ## Applications will be available at <app>.{{ baseDomain }}
+  baseDomain: cti.local
+
+  ## Git repository URL for this repo
+  repoURL: https://github.com/example/cti-stack.git
+
+  ## Git target revision (branch, tag, or commit)
+  targetRevision: HEAD
+
+  ## ArgoCD project name
+  project: default
+
+  ## Storage class (overridden per profile)
+  storageClass: local-path
+
+  ## Certificate issuer name
+  clusterIssuer: cti-ca-issuer
+
+  ## External TLS (for injecting certs from a separate CA)
+  externalTls:
+    enabled: false
+    secretName: ""
+
+  ## ISM/IRAP Security Hardening (PROTECTED level)
+  security:
+    podSecurity: true          # Pod Security Standards enforcement (ISM-1249)
+    networkPolicies: true      # Default-deny + allow-list (ISM-1181)
+    internalTls: true          # TLS on all internal services (ISM-1781)
+    ingressHardening: true     # Security headers, TLS policy (ISM-1139)
+    classificationBanner: true # Classification banner on all pages (ISM-0408)
+
+  ## Classification marking (ISM-0408)
+  classification: "PROTECTED"
+  classificationBanner: "This system is classified PROTECTED. Unauthorised access is prohibited. All activity is monitored and logged."
+
+## Namespace definitions
+namespaces:
+  infra: cti-infra
+  azul: cti-azul
+  opencti: cti-opencti
+  mobsf: cti-mobsf
+  monitoring: cti-monitoring
+
+## Azul-specific settings
+azul:
+  ## Set to true after initial deployment succeeds to enable plugins
+  pluginsEnabled: false
+
+## Component toggles (set false to skip deploying a component)
+components:
+  certManager: true
+  ingressNginx: true
+  clusterIssuer: true
+  postgresqlOperator: true
+  postgresql: true              # Keycloak-only PostgreSQL
+  opensearchOperator: true
+  azulOpensearch: true
+  openctiOpensearch: true
+  azulMinio: true
+  openctiMinio: true
+  openctiPostgresql: true
+  mobsfPostgresql: true
+  kafka: true
+  redis: true
+  rabbitmq: true
+  keycloak: true
+  monitoring: true
+  azul: true
+  opencti: true
+  mobsf: true

@@ -1,0 +1,28 @@
+{{- if .Values.tls.enabled }}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cti-rabbitmq-tls
+  labels:
+    app.kubernetes.io/name: rabbitmq
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  secretName: cti-rabbitmq-tls
+  duration: 8760h    # 1 year
+  renewBefore: 720h  # 30 days
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+  usages:
+    - server auth
+    - client auth
+  dnsNames:
+    - cti-rabbitmq
+    - cti-rabbitmq-headless
+    - "*.cti-rabbitmq-headless"
+    - cti-rabbitmq.{{ .Release.Namespace }}.svc
+    - cti-rabbitmq.{{ .Release.Namespace }}.svc.cluster.local
+  issuerRef:
+    name: cti-ca-issuer
+    kind: ClusterIssuer
+{{- end }}

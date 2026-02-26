@@ -1,0 +1,4 @@
+cluster:
+  replicas: 1
+  persistence:
+    storageClass: local-path

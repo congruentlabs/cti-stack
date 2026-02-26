@@ -1,0 +1,45 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: Kafka
+metadata:
+  name: cti-kafka
+  annotations:
+    strimzi.io/kraft: "enabled"
+    strimzi.io/node-pools: "enabled"
+spec:
+  kafka:
+    version: {{ .Values.kafka.version | quote }}
+    replicas: {{ .Values.kafka.replicas }}
+    listeners:
+      ## ISM-1781: TLS-only — no plaintext listener
+      - name: tls
+        port: 9093
+        type: internal
+        tls: true
+        configuration:
+          brokerCertChainAndKey:
+            secretName: cti-kafka-tls
+            certificate: tls.crt
+            key: tls.key
+    storage:
+      type: jbod
+      volumes:
+        - id: 0
+          type: {{ .Values.kafka.storage.type }}
+          size: {{ .Values.kafka.storage.size }}
+          {{- if .Values.kafka.storage.storageClass }}
+          class: {{ .Values.kafka.storage.storageClass }}
+          {{- end }}
+          deleteClaim: false
+    config:
+      {{- range $key, $value := .Values.kafka.config }}
+      {{ $key }}: {{ $value }}
+      {{- end }}
+    resources:
+      requests:
+        memory: {{ .Values.kafka.resources.requests.memory }}
+        cpu: {{ .Values.kafka.resources.requests.cpu | quote }}
+      limits:
+        memory: {{ .Values.kafka.resources.limits.memory }}
+  entityOperator:
+    topicOperator: {}
+    userOperator: {}

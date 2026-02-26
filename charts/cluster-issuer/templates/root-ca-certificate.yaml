@@ -1,0 +1,23 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cti-root-ca
+  namespace: cti-infra
+spec:
+  isCA: true
+  secretName: cti-root-ca-secret
+  commonName: {{ .Values.ca.commonName | quote }}
+  duration: {{ .Values.ca.duration }}
+  renewBefore: {{ .Values.ca.renewBefore }}
+  issuerRef:
+    name: cti-selfsigned-issuer
+    kind: ClusterIssuer
+    group: cert-manager.io
+  usages:
+    - digital signature
+    - key encipherment
+    - cert sign
+    - crl sign
+  privateKey:
+    algorithm: ECDSA
+    size: 256

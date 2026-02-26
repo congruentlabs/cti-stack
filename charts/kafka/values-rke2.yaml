@@ -1,0 +1,28 @@
+kafka:
+  replicas: 3
+  storage:
+    storageClass: longhorn
+    size: 50Gi
+  resources:
+    requests:
+      memory: 4Gi
+      cpu: "1"
+    limits:
+      memory: 6Gi
+  config:
+    offsets.topic.replication.factor: 3
+    transaction.state.log.replication.factor: 3
+    transaction.state.log.min.isr: 2
+    default.replication.factor: 3
+    min.insync.replicas: 2
+
+topics:
+  - name: azul-jobs
+    partitions: 12
+    replicas: 3
+  - name: azul-results
+    partitions: 12
+    replicas: 3
+  - name: azul-notifications
+    partitions: 6
+    replicas: 3

@@ -1,0 +1,95 @@
+global:
+  baseDomain: cti.local
+  clusterIssuer: cti-ca-issuer
+
+keycloak:
+  replicas: 1
+  image:
+    repository: quay.io/keycloak/keycloak
+    ## ISM-1443: Pin to digest. Update with: docker buildx imagetools inspect quay.io/keycloak/keycloak:26.0
+    tag: "26.0"
+  resources:
+    requests:
+      memory: 1Gi
+      cpu: 500m
+    limits:
+      memory: 2Gi
+  database:
+    vendor: postgres
+    hostname: cti-postgresql-rw.cti-infra.svc
+    port: 5432
+    database: keycloak
+    existingSecret: keycloak-db-credentials
+    existingSecretKey: password
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: "{{ .Values.global.clusterIssuer }}"
+    rules:
+      - host: keycloak.{{ .Values.global.baseDomain }}
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - secretName: keycloak-tls
+        hosts:
+          - keycloak.{{ .Values.global.baseDomain }}
+  extraEnv:
+    - name: KC_HOSTNAME
+      value: keycloak.{{ .Values.global.baseDomain }}
+    - name: KC_PROXY
+      value: edge
+    - name: KC_HEALTH_ENABLED
+      value: "true"
+    - name: KC_METRICS_ENABLED
+      value: "true"
+  podSecurityContext:
+    runAsNonRoot: true
+    fsGroup: 1000
+    seccompProfile:
+      type: RuntimeDefault
+  securityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: false
+    capabilities:
+      drop:
+        - ALL
+  serviceAccount:
+    create: true
+
+realm:
+  name: cti
+  displayName: CTI Stack
+  clients:
+    azul:
+      clientId: azul
+      rootUrl: https://azul.{{ .Values.global.baseDomain }}
+      redirectUris:
+        - https://azul.{{ .Values.global.baseDomain }}/*
+      webOrigins:
+        - https://azul.{{ .Values.global.baseDomain }}
+    opencti:
+      clientId: opencti
+      rootUrl: https://opencti.{{ .Values.global.baseDomain }}
+      redirectUris:
+        - https://opencti.{{ .Values.global.baseDomain }}/*
+      webOrigins:
+        - https://opencti.{{ .Values.global.baseDomain }}
+    mobsf:
+      clientId: mobsf
+      rootUrl: https://mobsf.{{ .Values.global.baseDomain }}
+      redirectUris:
+        - https://mobsf.{{ .Values.global.baseDomain }}/*
+      webOrigins:
+        - https://mobsf.{{ .Values.global.baseDomain }}
+    grafana:
+      clientId: grafana
+      rootUrl: https://grafana.{{ .Values.global.baseDomain }}
+      redirectUris:
+        - https://grafana.{{ .Values.global.baseDomain }}/*
+      webOrigins:
+        - https://grafana.{{ .Values.global.baseDomain }}
+
+networkPolicy:
+  enabled: true

@@ -1,0 +1,29 @@
+cluster:
+  name: mobsf-postgresql
+  instances: 1
+  ## ISM-1443: Pin to digest. Update with: docker buildx imagetools inspect ghcr.io/cloudnative-pg/postgresql:16.4
+  imageName: ghcr.io/cloudnative-pg/postgresql:16.4
+  storage:
+    size: 10Gi
+    storageClass: ""  # set by profile
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 100m
+    limits:
+      memory: 512Mi
+  postgresql:
+    parameters:
+      max_connections: "50"
+      shared_buffers: 64MB
+      effective_cache_size: 128MB
+      ssl: "on"
+      ssl_min_protocol_version: "TLSv1.3"
+
+bootstrap:
+  database: mobsf
+  owner: mobsf
+  password: "CHANGE_ME_MOBSF_PG_PASSWORD"
+
+networkPolicy:
+  enabled: true

@@ -1,0 +1,27 @@
+cluster:
+  name: cti-rabbitmq
+  replicas: 1
+  ## ISM-1443: Image pinned to digest
+  image: rabbitmq:3.13-management@sha256:e64a7a840460029cb035607721e0b8116c2843ea2cc7691c4b43c4f7f602aabd
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 250m
+    limits:
+      memory: 1Gi
+  persistence:
+    storageClass: ""
+    storage: 10Gi
+  rabbitmq:
+    additionalConfig: |
+      default_vhost = /
+      default_permissions.configure = .*
+      default_permissions.read = .*
+      default_permissions.write = .*
+
+tls:
+  enabled: true
+  secretName: cti-rabbitmq-tls
+
+networkPolicy:
+  enabled: true

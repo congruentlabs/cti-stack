@@ -1,0 +1,34 @@
+image:
+  repository: redis
+  tag: "7.4@sha256:85dd1a062e5d24dcf74394f49cb11a49d1021b3969d32381f1bcacf2a5f6f610"
+  pullPolicy: IfNotPresent
+
+replicas: 1
+
+resources:
+  requests:
+    memory: 512Mi
+    cpu: 250m
+  limits:
+    memory: 1Gi
+
+persistence:
+  enabled: true
+  size: 5Gi
+  storageClass: ""
+
+sentinel:
+  enabled: false
+
+redis:
+  maxmemory: 512mb
+  maxmemoryPolicy: allkeys-lru
+
+tls:
+  enabled: true
+
+auth:
+  enabled: true
+
+networkPolicy:
+  enabled: true

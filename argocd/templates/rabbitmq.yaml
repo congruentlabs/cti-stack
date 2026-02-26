@@ -1,0 +1,9 @@
+{{- if .Values.components.rabbitmq }}
+{{ include "cti-stack.application" (dict
+  "name" "cti-rabbitmq"
+  "wave" "4"
+  "namespace" .Values.namespaces.infra
+  "chart" "charts/rabbitmq"
+  "context" $
+) }}
+{{- end }}

@@ -1,0 +1,9 @@
+{{- if .Values.components.certManager }}
+{{ include "cti-stack.application" (dict
+  "name" "cti-cert-manager"
+  "wave" "0"
+  "namespace" .Values.namespaces.infra
+  "chart" "charts/cert-manager"
+  "context" $
+) }}
+{{- end }}

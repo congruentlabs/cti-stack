@@ -1,0 +1,205 @@
+## ---------------------------------------------------------------------------
+## OpenSearchCluster CRD — rendered by templates/opensearch-cluster.yaml
+## ---------------------------------------------------------------------------
+cluster:
+  name: azul-opensearch
+  version: "3.2.0"
+  serviceName: azul-opensearch
+
+  nodePools:
+    - component: nodes
+      replicas: 3
+      diskSize: 50Gi
+      storageClass: ""
+      roles:
+        - cluster_manager
+        - data
+        - ingest
+      resources:
+        requests:
+          memory: 2Gi
+          cpu: 500m
+        limits:
+          memory: 3Gi
+      jvm: "-Xmx1g -Xms1g"
+
+  additionalConfig:
+    plugins.security.audit.type: internal_opensearch
+    plugins.security.enable_snapshot_restore_privilege: "true"
+    plugins.security.check_snapshot_restore_write_privileges: "true"
+    plugins.security.restapi.roles_enabled: '["all_access", "security_rest_api_access"]'
+
+  tls:
+    transport:
+      generate: false
+      secret:
+        name: azul-opensearch-tls
+    http:
+      generate: false
+      secret:
+        name: azul-opensearch-tls
+
+  security:
+    adminCredentialsSecret:
+      name: azul-opensearch-admin-credentials
+    securityConfigSecret:
+      name: azul-opensearch-securityconfig
+    adminSecret:
+      name: azul-opensearch-admin-tls
+
+  adminDn:
+    - "CN=azul-opensearch-admin"
+  nodesDn:
+    - "CN=azul-opensearch"
+
+  ## ISM-1249: Pod and container security contexts
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+    seccompProfile:
+      type: RuntimeDefault
+  containerSecurityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+
+## ---------------------------------------------------------------------------
+## Security config — rendered into azul-opensearch-securityconfig Secret
+## ---------------------------------------------------------------------------
+securityConfig:
+  configYml: |
+    _meta:
+      type: "config"
+      config_version: 2
+    config:
+      dynamic:
+        http:
+          anonymous_auth_enabled: false
+        authc:
+          basic_internal_auth:
+            description: "HTTP basic against internal user DB"
+            http_enabled: true
+            transport_enabled: true
+            order: 0
+            http_authenticator:
+              type: basic
+              challenge: true
+            authentication_backend:
+              type: intern
+
+  internalUsersYml: |
+    _meta:
+      type: "internalusers"
+      config_version: 2
+    admin:
+      reserved: true
+      backend_roles:
+        - "admin"
+      description: "OpenSearch admin user"
+    azul_writer:
+      hash: "$2y$12$CHANGE_ME_OPENSEARCH_AZUL_WRITER_BCRYPT"
+      reserved: false
+      backend_roles:
+        - "azul_write"
+      description: "Azul metastore write access"
+    azul_security:
+      hash: "$2y$12$CHANGE_ME_OPENSEARCH_AZUL_SECURITY_BCRYPT"
+      reserved: false
+      backend_roles:
+        - "azul_admin"
+      description: "Azul security configuration access"
+
+  rolesYml: |
+    _meta:
+      type: "roles"
+      config_version: 2
+    azul_write:
+      cluster_permissions:
+        - "cluster_composite_ops"
+        - "indices:admin/template/*"
+        - "cluster:monitor/*"
+      index_permissions:
+        - index_patterns:
+            - "azul-*"
+          allowed_actions:
+            - "crud"
+            - "create_index"
+            - "manage"
+    azul_read:
+      cluster_permissions:
+        - "cluster_composite_ops_ro"
+      index_permissions:
+        - index_patterns:
+            - "azul-*"
+          allowed_actions:
+            - "read"
+            - "get"
+            - "search"
+    azul_admin:
+      cluster_permissions:
+        - "cluster_all"
+      index_permissions:
+        - index_patterns:
+            - "azul-*"
+            - ".opendistro_security"
+          allowed_actions:
+            - "unlimited"
+    ## Placeholder roles to prevent SG 900D warning about missing default roles
+    role1:
+      reserved: true
+    role2:
+      reserved: true
+    role3:
+      reserved: true
+    role4:
+      reserved: true
+    role5:
+      reserved: true
+
+  rolesMappingYml: |
+    _meta:
+      type: "rolesmapping"
+      config_version: 2
+    all_access:
+      reserved: false
+      backend_roles:
+        - "admin"
+    azul_write:
+      reserved: false
+      backend_roles:
+        - "azul_write"
+      users:
+        - "azul_writer"
+    azul_read:
+      reserved: false
+      backend_roles:
+        - "azul_read"
+    azul_admin:
+      reserved: false
+      backend_roles:
+        - "azul_admin"
+      users:
+        - "azul_security"
+
+## ---------------------------------------------------------------------------
+## Admin credentials — rendered into azul-opensearch-admin-credentials Secret
+## Operator auto-hashes the password (bcrypt) for the admin user
+## ---------------------------------------------------------------------------
+adminCredentials:
+  username: admin
+  password: "CHANGE_ME_AZUL_OPENSEARCH_ADMIN_PASSWORD"
+
+## ---------------------------------------------------------------------------
+## cert-manager Certificate
+## ---------------------------------------------------------------------------
+certificate:
+  issuerName: cti-ca-issuer
+
+## ---------------------------------------------------------------------------
+## NetworkPolicy
+## ---------------------------------------------------------------------------
+networkPolicy:
+  enabled: true

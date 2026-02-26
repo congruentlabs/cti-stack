@@ -1,0 +1,17 @@
+cluster:
+  nodePools:
+    - component: nodes
+      replicas: 3
+      diskSize: 100Gi
+      storageClass: longhorn
+      roles:
+        - cluster_manager
+        - data
+        - ingest
+      resources:
+        requests:
+          memory: 8Gi
+          cpu: "2"
+        limits:
+          memory: 12Gi
+      jvm: "-Xmx4g -Xms4g"

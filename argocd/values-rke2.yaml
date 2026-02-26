@@ -1,0 +1,6 @@
+## RKE2 profile overrides
+## Multi-node HA deployment with Longhorn storage
+
+global:
+  clusterProfile: rke2
+  storageClass: longhorn

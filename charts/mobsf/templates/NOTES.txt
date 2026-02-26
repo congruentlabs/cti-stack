@@ -1,0 +1,12 @@
+MobSF has been deployed!
+
+{{- if .Values.ingress.enabled }}
+Access MobSF at: https://{{ (index .Values.ingress.hosts 0).host }}
+{{- else }}
+To access MobSF, run:
+  kubectl port-forward svc/{{ include "mobsf.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }} -n {{ .Release.Namespace }}
+{{- end }}
+
+{{- if .Values.djangoq.enabled }}
+DjangoQ worker is enabled with {{ .Values.djangoq.replicas }} replica(s).
+{{- end }}

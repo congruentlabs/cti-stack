@@ -1,0 +1,9 @@
+{{- if .Values.components.mobsf }}
+{{ include "cti-stack.application" (dict
+  "name" "cti-mobsf-prereqs"
+  "wave" "6"
+  "namespace" .Values.namespaces.mobsf
+  "chart" "charts/mobsf-prereqs"
+  "context" $
+) }}
+{{- end }}

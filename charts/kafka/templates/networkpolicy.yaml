@@ -1,0 +1,51 @@
+{{- if .Values.networkPolicy.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: cti-kafka
+  labels:
+    app.kubernetes.io/name: kafka
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  podSelector:
+    matchLabels:
+      strimzi.io/cluster: cti-kafka
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        ## Allow from cti-azul namespace
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: cti-azul
+        ## Allow from cti-infra namespace (entity operator, other Kafka pods)
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: cti-infra
+      ports:
+        - port: 9093
+          protocol: TCP
+    ## Allow inter-broker communication
+    - from:
+        - podSelector:
+            matchLabels:
+              strimzi.io/cluster: cti-kafka
+      ports:
+        - port: 9091
+          protocol: TCP
+        - port: 9093
+          protocol: TCP
+  egress:
+    ## Allow DNS
+    - ports:
+        - port: 53
+          protocol: UDP
+        - port: 53
+          protocol: TCP
+    ## Allow inter-broker communication
+    - to:
+        - podSelector:
+            matchLabels:
+              strimzi.io/cluster: cti-kafka
+{{- end }}

@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: cti-redis
+  labels:
+    app.kubernetes.io/name: redis
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  type: ClusterIP
+  ports:
+    {{- if .Values.tls.enabled }}
+    - port: 6380
+      targetPort: redis-tls
+      protocol: TCP
+      name: redis-tls
+    {{- else }}
+    - port: 6379
+      targetPort: redis
+      protocol: TCP
+      name: redis
+    {{- end }}
+  selector:
+    app.kubernetes.io/name: redis
+    app.kubernetes.io/instance: {{ .Release.Name }}

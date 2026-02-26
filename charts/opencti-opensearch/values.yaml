@@ -1,0 +1,147 @@
+## ---------------------------------------------------------------------------
+## OpenSearchCluster CRD — rendered by templates/opensearch-cluster.yaml
+## ---------------------------------------------------------------------------
+cluster:
+  name: opencti-opensearch
+  version: "3.2.0"
+  serviceName: opencti-opensearch
+
+  nodePools:
+    - component: nodes
+      replicas: 3
+      diskSize: 50Gi
+      storageClass: ""
+      roles:
+        - cluster_manager
+        - data
+        - ingest
+      resources:
+        requests:
+          memory: 2Gi
+          cpu: 500m
+        limits:
+          memory: 3Gi
+      jvm: "-Xmx1g -Xms1g"
+
+  additionalConfig:
+    plugins.security.audit.type: internal_opensearch
+    plugins.security.enable_snapshot_restore_privilege: "true"
+    plugins.security.check_snapshot_restore_write_privileges: "true"
+    plugins.security.restapi.roles_enabled: '["all_access", "security_rest_api_access"]'
+
+  tls:
+    transport:
+      generate: false
+      secret:
+        name: opencti-opensearch-tls
+    http:
+      generate: false
+      secret:
+        name: opencti-opensearch-tls
+
+  security:
+    adminCredentialsSecret:
+      name: opencti-opensearch-admin-credentials
+    securityConfigSecret:
+      name: opencti-opensearch-securityconfig
+    adminSecret:
+      name: opencti-opensearch-admin-tls
+
+  adminDn:
+    - "CN=opencti-opensearch-admin"
+  nodesDn:
+    - "CN=opencti-opensearch"
+
+  ## ISM-1249: Pod and container security contexts
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+    seccompProfile:
+      type: RuntimeDefault
+  containerSecurityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+
+## ---------------------------------------------------------------------------
+## Security config — rendered into opencti-opensearch-securityconfig Secret
+## OpenCTI connects as admin — no additional service users needed
+## ---------------------------------------------------------------------------
+securityConfig:
+  configYml: |
+    _meta:
+      type: "config"
+      config_version: 2
+    config:
+      dynamic:
+        http:
+          anonymous_auth_enabled: false
+        authc:
+          basic_internal_auth:
+            description: "HTTP basic against internal user DB"
+            http_enabled: true
+            transport_enabled: true
+            order: 0
+            http_authenticator:
+              type: basic
+              challenge: true
+            authentication_backend:
+              type: intern
+
+  internalUsersYml: |
+    _meta:
+      type: "internalusers"
+      config_version: 2
+    admin:
+      reserved: true
+      backend_roles:
+        - "admin"
+      description: "OpenSearch admin user"
+
+  rolesYml: |
+    _meta:
+      type: "roles"
+      config_version: 2
+    ## Placeholder roles to prevent SG 900D warning about missing default roles
+    role1:
+      reserved: true
+    role2:
+      reserved: true
+    role3:
+      reserved: true
+    role4:
+      reserved: true
+    role5:
+      reserved: true
+
+  rolesMappingYml: |
+    _meta:
+      type: "rolesmapping"
+      config_version: 2
+    all_access:
+      reserved: false
+      backend_roles:
+        - "admin"
+
+## ---------------------------------------------------------------------------
+## Admin credentials — rendered into opencti-opensearch-admin-credentials Secret
+## Operator auto-hashes the password (bcrypt) for the admin user
+## ---------------------------------------------------------------------------
+adminCredentials:
+  username: admin
+  password: "CHANGE_ME_OPENCTI_OPENSEARCH_ADMIN_PASSWORD"
+
+## ---------------------------------------------------------------------------
+## cert-manager Certificate
+## ---------------------------------------------------------------------------
+certificate:
+  issuerName: cti-ca-issuer
+
+## ---------------------------------------------------------------------------
+## NetworkPolicy
+## ---------------------------------------------------------------------------
+networkPolicy:
+  enabled: true

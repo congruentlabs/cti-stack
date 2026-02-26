@@ -1,0 +1,64 @@
+{{- if .Values.components.azul }}
+{{- /*
+  Wave 7: Azul application.
+  Uses ArgoCD multi-source: upstream Azul chart + local values overlay.
+*/ -}}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cti-azul
+  namespace: argocd
+  labels:
+    {{- include "cti-stack.labels" . | nindent 4 }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "7"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: {{ .Values.global.project }}
+  sources:
+    ## Source 1: Upstream Azul Helm chart
+    - repoURL: https://github.com/AustralianCyberSecurityCentre/azul-app.git
+      targetRevision: main
+      path: azul
+      helm:
+        valueFiles:
+          - $values/charts/azul/values.yaml
+          {{- if eq .Values.global.clusterProfile "k3s" }}
+          - $values/charts/azul/values-k3s.yaml
+          {{- else if eq .Values.global.clusterProfile "rke2" }}
+          - $values/charts/azul/values-rke2.yaml
+          {{- end }}
+          {{- if not .Values.azul.pluginsEnabled }}
+          - $values/charts/azul/values-plugins-disabled.yaml
+          {{- end }}
+        parameters:
+          - name: global.baseDomain
+            value: {{ .Values.global.baseDomain | quote }}
+          - name: web.ingress.hosts[0]
+            value: azul.{{ .Values.global.baseDomain }}
+          - name: web.ingress.tls[0].hosts[0]
+            value: azul.{{ .Values.global.baseDomain }}
+          - name: security.oidc.authority_url
+            value: https://keycloak.{{ .Values.global.baseDomain }}/realms/cti
+    ## Source 2: This repo (values overlays)
+    - repoURL: {{ .Values.global.repoURL }}
+      targetRevision: {{ .Values.global.targetRevision }}
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ .Values.namespaces.azul }}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=false
+      - ServerSideApply=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+{{- end }}

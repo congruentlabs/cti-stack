@@ -1,0 +1,26 @@
+{{- /*
+  Wave -4: Default-deny NetworkPolicies for all namespaces.
+  ISM-1181, ISM-1182: Default deny all ingress and egress traffic.
+  Per-service allow-list policies are defined in each chart.
+*/ -}}
+{{- if .Values.global.security.networkPolicies }}
+{{- $namespaces := list .Values.namespaces.infra .Values.namespaces.azul .Values.namespaces.opencti .Values.namespaces.mobsf .Values.namespaces.monitoring }}
+{{- range $ns := $namespaces }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+  namespace: {{ $ns }}
+  labels:
+    app.kubernetes.io/part-of: cti-stack
+    app.kubernetes.io/component: network-policy
+  annotations:
+    argocd.argoproj.io/sync-wave: "-4"
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+{{- end }}
+{{- end }}

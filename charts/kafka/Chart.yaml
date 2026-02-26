@@ -1,0 +1,10 @@
+apiVersion: v2
+name: kafka
+description: Strimzi Kafka operator and Kafka cluster (KRaft mode) for CTI Stack
+version: 0.1.0
+type: application
+
+dependencies:
+  - name: strimzi-kafka-operator
+    version: 0.44.0
+    repository: https://strimzi.io/charts/

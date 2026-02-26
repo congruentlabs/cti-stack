@@ -1,0 +1,49 @@
+minio:
+  mode: standalone
+  replicas: 1
+  resources:
+    requests:
+      memory: 1Gi
+      cpu: 500m
+    limits:
+      memory: 2Gi
+  persistence:
+    enabled: true
+    size: 50Gi
+    storageClass: ""
+  rootUser: minioadmin
+  rootPassword: CHANGE_ME_OPENCTI_MINIO_ROOT_PASSWORD
+  buckets:
+    - name: opencti
+      policy: none
+      purge: false
+  tls:
+    enabled: true
+  serviceAccount:
+    create: true
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+    seccompProfile:
+      type: RuntimeDefault
+  containerSecurityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: false
+    capabilities:
+      drop:
+        - ALL
+
+mcImage:
+  repository: minio/mc
+  ## ISM-1443: Image pinned to digest
+  tag: "RELEASE.2024-11-21T17-21-54Z@sha256:771f5ad7925a6b5e069786d8e847a292de320f1e3e3203647e29f47ec9b3d93b"
+
+buckets:
+  - name: opencti
+    policy: none
+    purge: false
+
+networkPolicy:
+  enabled: true

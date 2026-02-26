@@ -1,0 +1,11 @@
+minio:
+  mode: distributed
+  replicas: 4
+  persistence:
+    storageClass: longhorn
+    size: 100Gi
+  resources:
+    requests:
+      memory: 2Gi
+    limits:
+      memory: 4Gi

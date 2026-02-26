@@ -1,0 +1,29 @@
+cluster:
+  name: opencti-postgresql
+  instances: 1
+  ## ISM-1443: Pin to digest. Update with: docker buildx imagetools inspect ghcr.io/cloudnative-pg/postgresql:16.4
+  imageName: ghcr.io/cloudnative-pg/postgresql:16.4
+  storage:
+    size: 10Gi
+    storageClass: ""  # set by profile
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 250m
+    limits:
+      memory: 1Gi
+  postgresql:
+    parameters:
+      max_connections: "100"
+      shared_buffers: 128MB
+      effective_cache_size: 256MB
+      ssl: "on"
+      ssl_min_protocol_version: "TLSv1.3"
+
+bootstrap:
+  database: opencti
+  owner: opencti
+  password: "CHANGE_ME_OPENCTI_PG_PASSWORD"
+
+networkPolicy:
+  enabled: true

@@ -1,0 +1,9 @@
+{{- if .Values.components.mobsfPostgresql }}
+{{ include "cti-stack.application" (dict
+  "name" "cti-mobsf-postgresql"
+  "wave" "4"
+  "namespace" .Values.namespaces.mobsf
+  "chart" "charts/mobsf-postgresql"
+  "context" $
+) }}
+{{- end }}

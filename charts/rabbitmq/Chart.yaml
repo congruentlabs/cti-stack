@@ -1,0 +1,10 @@
+apiVersion: v2
+name: rabbitmq
+description: RabbitMQ Cluster Operator and RabbitmqCluster CR for CTI Stack
+version: 0.1.0
+type: application
+
+dependencies:
+  - name: rabbitmq-cluster-operator
+    version: 4.3.28
+    repository: https://charts.bitnami.com/bitnami

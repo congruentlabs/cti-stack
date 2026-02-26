@@ -1,0 +1,5 @@
+## ---------------------------------------------------------------------------
+## CloudNativePG Operator — subchart values
+## Deploys only the operator; CNPG Cluster CRs are in per-app charts
+## ---------------------------------------------------------------------------
+## Operator defaults are sufficient — no overrides needed

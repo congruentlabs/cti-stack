@@ -1,0 +1,29 @@
+{{- if .Values.tls.enabled }}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cti-redis-tls
+  labels:
+    app.kubernetes.io/name: redis
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  secretName: cti-redis-tls
+  duration: 8760h    # 1 year
+  renewBefore: 720h  # 30 days
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+  usages:
+    - server auth
+    - client auth
+  dnsNames:
+    - cti-redis
+    - cti-redis-headless
+    - cti-redis.{{ .Release.Namespace }}.svc
+    - cti-redis-headless.{{ .Release.Namespace }}.svc
+    - cti-redis.{{ .Release.Namespace }}.svc.cluster.local
+    - cti-redis-headless.{{ .Release.Namespace }}.svc.cluster.local
+  issuerRef:
+    name: cti-ca-issuer
+    kind: ClusterIssuer
+{{- end }}

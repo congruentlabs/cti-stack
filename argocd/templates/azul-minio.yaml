@@ -1,0 +1,9 @@
+{{- if .Values.components.azulMinio }}
+{{ include "cti-stack.application" (dict
+  "name" "cti-azul-minio"
+  "wave" "4"
+  "namespace" .Values.namespaces.azul
+  "chart" "charts/azul-minio"
+  "context" $
+) }}
+{{- end }}

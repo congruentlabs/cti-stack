@@ -1,0 +1,36 @@
+## k3s profile: local-path storage, constrained resources, minimal plugins
+
+storageClassName: local-path
+
+api:
+  replicas: 1
+  resources:
+    requests:
+      memory: 2Gi
+      cpu: 500m
+    limits:
+      memory: 4Gi
+
+dispatcher:
+  replicas: 1
+  resources:
+    requests:
+      memory: 1Gi
+      cpu: 500m
+    limits:
+      memory: 2Gi
+
+plugins:
+  yarax:
+    enabled: true
+  maco:
+    enabled: true
+  suricata:
+    enabled: true
+  tika:
+    enabled: true
+  # Disabled on k3s to save resources
+  capa:
+    enabled: false
+  virustotal:
+    enabled: false

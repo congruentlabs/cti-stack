@@ -1,0 +1,10 @@
+cluster:
+  replicas: 3
+  persistence:
+    storageClass: longhorn
+    storage: 20Gi
+  resources:
+    requests:
+      memory: 1Gi
+    limits:
+      memory: 2Gi

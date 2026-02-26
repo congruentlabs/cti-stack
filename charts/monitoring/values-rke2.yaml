@@ -1,0 +1,42 @@
+kube-prometheus-stack:
+  prometheus:
+    prometheusSpec:
+      retention: 30d
+      replicas: 2
+      resources:
+        requests:
+          memory: 4Gi
+          cpu: "1"
+        limits:
+          memory: 8Gi
+      storageSpec:
+        volumeClaimTemplate:
+          spec:
+            storageClassName: longhorn
+            resources:
+              requests:
+                storage: 200Gi
+  alertmanager:
+    alertmanagerSpec:
+      replicas: 2
+  grafana:
+    replicas: 2
+    resources:
+      requests:
+        memory: 512Mi
+      limits:
+        memory: 1Gi
+
+loki:
+  deploymentMode: SimpleScalable
+  singleBinary:
+    replicas: 0
+  read:
+    replicas: 2
+  write:
+    replicas: 2
+  backend:
+    replicas: 2
+  loki:
+    commonConfig:
+      replication_factor: 2

@@ -1,0 +1,5 @@
+apiVersion: v2
+name: mobsf-postgresql
+description: PostgreSQL instance for MobSF (CR-only chart, operator deployed separately)
+version: 0.1.0
+type: application

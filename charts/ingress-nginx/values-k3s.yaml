@@ -1,0 +1,12 @@
+ingress-nginx:
+  controller:
+    kind: DaemonSet
+
+    hostPort:
+      enabled: true
+
+    service:
+      type: ClusterIP
+
+    # Single-node k3s; no node selector needed
+    nodeSelector: {}

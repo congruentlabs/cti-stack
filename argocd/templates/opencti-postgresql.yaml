@@ -1,0 +1,9 @@
+{{- if .Values.components.openctiPostgresql }}
+{{ include "cti-stack.application" (dict
+  "name" "cti-opencti-postgresql"
+  "wave" "4"
+  "namespace" .Values.namespaces.opencti
+  "chart" "charts/opencti-postgresql"
+  "context" $
+) }}
+{{- end }}

@@ -1,0 +1,9 @@
+{{- if .Values.components.opensearchOperator }}
+{{ include "cti-stack.application" (dict
+  "name" "cti-opensearch-operator"
+  "wave" "3"
+  "namespace" .Values.namespaces.infra
+  "chart" "charts/opensearch-operator"
+  "context" $
+) }}
+{{- end }}

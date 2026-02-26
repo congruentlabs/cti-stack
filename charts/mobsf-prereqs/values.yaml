@@ -1,0 +1,17 @@
+global:
+  baseDomain: cti.local
+
+secrets:
+  postgresql:
+    host: mobsf-postgresql-rw.cti-mobsf.svc
+    port: "5432"
+    database: mobsf
+    username: mobsf
+    password: CHANGE_ME_MOBSF_PG_PASSWORD
+
+  secretKey: CHANGE_ME_MOBSF_SECRET_KEY
+
+  oidc:
+    issuerUrl: https://keycloak.cti.local/realms/cti
+    clientId: mobsf
+    clientSecret: CHANGE_ME_MOBSF_OIDC_SECRET

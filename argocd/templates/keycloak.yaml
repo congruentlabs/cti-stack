@@ -1,0 +1,9 @@
+{{- if .Values.components.keycloak }}
+{{ include "cti-stack.application" (dict
+  "name" "cti-keycloak"
+  "wave" "5"
+  "namespace" .Values.namespaces.infra
+  "chart" "charts/keycloak"
+  "context" $
+) }}
+{{- end }}

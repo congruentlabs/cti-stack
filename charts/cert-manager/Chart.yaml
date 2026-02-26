@@ -1,0 +1,10 @@
+apiVersion: v2
+name: cert-manager
+version: 0.1.0
+description: Wrapper chart for jetstack/cert-manager
+type: application
+
+dependencies:
+  - name: cert-manager
+    version: 1.17.1
+    repository: https://charts.jetstack.io

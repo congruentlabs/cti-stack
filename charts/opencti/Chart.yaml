@@ -1,0 +1,8 @@
+apiVersion: v2
+name: opencti
+description: OpenCTI platform for CTI Stack
+version: 0.1.0
+dependencies:
+  - name: opencti
+    version: 1.2.6
+    repository: https://devops-ia.github.io/helm-charts

@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cti-redis-config
+  labels:
+    app.kubernetes.io/name: redis
+    app.kubernetes.io/instance: {{ .Release.Name }}
+data:
+  redis.conf: |
+    bind 0.0.0.0
+    maxmemory {{ .Values.redis.maxmemory }}
+    maxmemory-policy {{ .Values.redis.maxmemoryPolicy }}
+    appendonly yes
+    save 60 1000
+    {{- if .Values.tls.enabled }}
+    ## TLS configuration (ISM-1781)
+    tls-port 6380
+    port 0
+    tls-cert-file /tls/tls.crt
+    tls-key-file /tls/tls.key
+    tls-ca-cert-file /tls/ca.crt
+    tls-auth-clients optional
+    tls-protocols "TLSv1.2 TLSv1.3"
+    tls-replication yes
+    {{- end }}
+    {{- if .Values.auth.enabled }}
+    ## Authentication (ISM-1469)
+    requirepass REDIS_PASSWORD_PLACEHOLDER
+    {{- end }}

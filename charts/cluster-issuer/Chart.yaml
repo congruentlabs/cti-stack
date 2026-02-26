@@ -1,0 +1,5 @@
+apiVersion: v2
+name: cluster-issuer
+version: 0.1.0
+description: "SelfSigned \u2192 Root CA \u2192 CA ClusterIssuer chain for CTI Stack"
+type: application

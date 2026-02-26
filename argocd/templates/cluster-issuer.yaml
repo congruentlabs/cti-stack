@@ -1,0 +1,9 @@
+{{- if .Values.components.clusterIssuer }}
+{{ include "cti-stack.application" (dict
+  "name" "cti-cluster-issuer"
+  "wave" "2"
+  "namespace" .Values.namespaces.infra
+  "chart" "charts/cluster-issuer"
+  "context" $
+) }}
+{{- end }}

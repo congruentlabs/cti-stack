@@ -1,0 +1,13 @@
+replicas: 3
+persistence:
+  storageClass: longhorn
+  size: 10Gi
+sentinel:
+  enabled: true
+resources:
+  requests:
+    memory: 1Gi
+  limits:
+    memory: 2Gi
+redis:
+  maxmemory: 1gb

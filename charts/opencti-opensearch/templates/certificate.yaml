@@ -1,0 +1,55 @@
+## Node/service TLS certificate — used for transport and HTTP
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ .Values.cluster.name }}-tls
+  labels:
+    app.kubernetes.io/name: opensearch
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  secretName: {{ .Values.cluster.name }}-tls
+  duration: 8760h    # 1 year
+  renewBefore: 720h  # 30 days
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+  commonName: {{ .Values.cluster.name }}
+  usages:
+    - server auth
+    - client auth
+  dnsNames:
+    - {{ .Values.cluster.serviceName }}
+    - {{ .Values.cluster.serviceName }}.{{ .Release.Namespace }}.svc
+    - {{ .Values.cluster.serviceName }}.{{ .Release.Namespace }}.svc.cluster.local
+    - {{ .Values.cluster.serviceName }}-nodes
+    - {{ .Values.cluster.serviceName }}-nodes.{{ .Release.Namespace }}.svc
+    - {{ .Values.cluster.serviceName }}-nodes.{{ .Release.Namespace }}.svc.cluster.local
+    - "*.{{ .Values.cluster.serviceName }}-nodes.{{ .Release.Namespace }}.svc.cluster.local"
+    - {{ .Values.cluster.serviceName }}-discovery
+    - {{ .Values.cluster.serviceName }}-discovery.{{ .Release.Namespace }}.svc
+    - {{ .Values.cluster.serviceName }}-discovery.{{ .Release.Namespace }}.svc.cluster.local
+  issuerRef:
+    name: {{ .Values.certificate.issuerName | default "cti-ca-issuer" }}
+    kind: ClusterIssuer
+---
+## Admin TLS certificate — used by the operator for securityadmin operations
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ .Values.cluster.name }}-admin-tls
+  labels:
+    app.kubernetes.io/name: opensearch
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  secretName: {{ .Values.cluster.name }}-admin-tls
+  duration: 8760h    # 1 year
+  renewBefore: 720h  # 30 days
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+  commonName: {{ .Values.cluster.name }}-admin
+  usages:
+    - client auth
+  issuerRef:
+    name: {{ .Values.certificate.issuerName | default "cti-ca-issuer" }}
+    kind: ClusterIssuer

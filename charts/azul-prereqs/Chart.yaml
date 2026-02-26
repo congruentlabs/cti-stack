@@ -1,0 +1,4 @@
+apiVersion: v2
+name: azul-prereqs
+description: Prerequisites (secrets/config) for Azul deployment
+version: 0.1.0

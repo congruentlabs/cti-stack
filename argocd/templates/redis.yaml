@@ -1,0 +1,9 @@
+{{- if .Values.components.redis }}
+{{ include "cti-stack.application" (dict
+  "name" "cti-redis"
+  "wave" "4"
+  "namespace" .Values.namespaces.infra
+  "chart" "charts/redis"
+  "context" $
+) }}
+{{- end }}

@@ -1,0 +1,27 @@
+## cert-manager Certificate for Kafka TLS — signed by the shared cti-ca-issuer
+## so that all clients (including Azul) trust a single root CA.
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cti-kafka-tls
+spec:
+  secretName: cti-kafka-tls
+  issuerRef:
+    name: {{ .Values.certificate.issuerName | default "cti-ca-issuer" }}
+    kind: ClusterIssuer
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+  duration: 8760h    # 1 year
+  renewBefore: 720h  # 30 days
+  dnsNames:
+    - cti-kafka-kafka-bootstrap
+    - cti-kafka-kafka-bootstrap.{{ .Release.Namespace }}
+    - cti-kafka-kafka-bootstrap.{{ .Release.Namespace }}.svc
+    - cti-kafka-kafka-bootstrap.{{ .Release.Namespace }}.svc.cluster.local
+    - cti-kafka-kafka-brokers
+    - cti-kafka-kafka-brokers.{{ .Release.Namespace }}
+    - cti-kafka-kafka-brokers.{{ .Release.Namespace }}.svc
+    - cti-kafka-kafka-brokers.{{ .Release.Namespace }}.svc.cluster.local
+    - "*.cti-kafka-kafka-brokers.{{ .Release.Namespace }}.svc"
+    - "*.cti-kafka-kafka-brokers.{{ .Release.Namespace }}.svc.cluster.local"

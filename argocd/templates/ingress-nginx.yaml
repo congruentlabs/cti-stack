@@ -1,0 +1,9 @@
+{{- if .Values.components.ingressNginx }}
+{{ include "cti-stack.application" (dict
+  "name" "cti-ingress-nginx"
+  "wave" "1"
+  "namespace" .Values.namespaces.infra
+  "chart" "charts/ingress-nginx"
+  "context" $
+) }}
+{{- end }}

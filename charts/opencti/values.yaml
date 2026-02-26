@@ -1,0 +1,167 @@
+global:
+  baseDomain: cti.local
+  clusterIssuer: cti-ca-issuer
+
+opencti:
+  # Disable bundled subcharts
+  opensearch:
+    enabled: false
+  redis:
+    enabled: false
+  rabbitmq:
+    enabled: false
+  minio:
+    enabled: false
+
+  env:
+    # Core
+    APP__PORT: "8080"
+    APP__BASE_URL: https://opencti.cti.local
+    APP__ADMIN__EMAIL:
+      valueFrom:
+        secretKeyRef:
+          name: opencti-credentials
+          key: admin-email
+    APP__ADMIN__PASSWORD:
+      valueFrom:
+        secretKeyRef:
+          name: opencti-credentials
+          key: admin-password
+    APP__ADMIN__TOKEN:
+      valueFrom:
+        secretKeyRef:
+          name: opencti-credentials
+          key: admin-token
+
+    # OpenSearch (HTTPS — ISM-1781)
+    ELASTICSEARCH__URL:
+      valueFrom:
+        secretKeyRef:
+          name: opencti-opensearch-credentials
+          key: url
+
+    # RabbitMQ (TLS — ISM-1781)
+    RABBITMQ__HOSTNAME:
+      valueFrom:
+        secretKeyRef:
+          name: opencti-rabbitmq-credentials
+          key: hostname
+    RABBITMQ__PORT:
+      valueFrom:
+        secretKeyRef:
+          name: opencti-rabbitmq-credentials
+          key: port
+    RABBITMQ__USERNAME:
+      valueFrom:
+        secretKeyRef:
+          name: opencti-rabbitmq-credentials
+          key: username
+    RABBITMQ__PASSWORD:
+      valueFrom:
+        secretKeyRef:
+          name: opencti-rabbitmq-credentials
+          key: password
+    RABBITMQ__MANAGEMENT__PORT:
+      valueFrom:
+        secretKeyRef:
+          name: opencti-rabbitmq-credentials
+          key: management-port
+    RABBITMQ__USE_SSL: "true"
+
+    # Redis (TLS — ISM-1781)
+    REDIS__HOSTNAME:
+      valueFrom:
+        secretKeyRef:
+          name: opencti-redis-credentials
+          key: hostname
+    REDIS__PORT:
+      valueFrom:
+        secretKeyRef:
+          name: opencti-redis-credentials
+          key: port
+    REDIS__PASSWORD:
+      valueFrom:
+        secretKeyRef:
+          name: opencti-redis-credentials
+          key: password
+    REDIS__USE_SSL: "true"
+
+    # MinIO/S3 (TLS — ISM-1781)
+    MINIO__ENDPOINT:
+      valueFrom:
+        secretKeyRef:
+          name: opencti-minio-credentials
+          key: endpoint
+    MINIO__PORT:
+      valueFrom:
+        secretKeyRef:
+          name: opencti-minio-credentials
+          key: port
+    MINIO__ACCESS_KEY:
+      valueFrom:
+        secretKeyRef:
+          name: opencti-minio-credentials
+          key: access-key
+    MINIO__SECRET_KEY:
+      valueFrom:
+        secretKeyRef:
+          name: opencti-minio-credentials
+          key: secret-key
+    MINIO__BUCKET_NAME:
+      valueFrom:
+        secretKeyRef:
+          name: opencti-minio-credentials
+          key: bucket
+    MINIO__USE_SSL: "true"
+
+    # OIDC
+    PROVIDERS__OPENID__STRATEGY: OpenIDConnectStrategy
+    PROVIDERS__OPENID__CONFIG__LABEL: "Keycloak"
+    PROVIDERS__OPENID__CONFIG__ISSUER:
+      valueFrom:
+        secretKeyRef:
+          name: opencti-oidc-credentials
+          key: issuer-url
+    PROVIDERS__OPENID__CONFIG__CLIENT_ID:
+      valueFrom:
+        secretKeyRef:
+          name: opencti-oidc-credentials
+          key: client-id
+    PROVIDERS__OPENID__CONFIG__CLIENT_SECRET:
+      valueFrom:
+        secretKeyRef:
+          name: opencti-oidc-credentials
+          key: client-secret
+    PROVIDERS__OPENID__CONFIG__REDIRECT_URIS: "[\"https://opencti.cti.local/auth/oic/callback\"]"
+
+  ingress:
+    enabled: true
+    className: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: cti-ca-issuer
+    hosts:
+      - host: opencti.cti.local
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - secretName: opencti-tls
+        hosts:
+          - opencti.cti.local
+
+  resources:
+    requests:
+      memory: 2Gi
+      cpu: "1"
+    limits:
+      memory: 4Gi
+
+  worker:
+    enabled: true
+    replicas: 1
+    resources:
+      requests:
+        memory: 512Mi
+        cpu: 250m
+      limits:
+        memory: 1Gi

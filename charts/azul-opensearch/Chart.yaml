@@ -1,0 +1,5 @@
+apiVersion: v2
+name: azul-opensearch
+description: OpenSearch instance for Azul (CR-only chart, operator deployed separately)
+version: 0.1.0
+type: application

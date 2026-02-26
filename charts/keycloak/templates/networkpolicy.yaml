@@ -1,0 +1,56 @@
+{{- if .Values.networkPolicy.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: cti-keycloak
+  labels:
+    app.kubernetes.io/name: keycloak
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: keycloak
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        ## Allow from cti-azul namespace (OIDC callbacks)
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: cti-azul
+        ## Allow from cti-opencti namespace
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: cti-opencti
+        ## Allow from cti-mobsf namespace
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: cti-mobsf
+        ## Allow from cti-monitoring namespace (Grafana OIDC)
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: cti-monitoring
+        ## Allow from cti-infra namespace (ingress controller)
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: cti-infra
+      ports:
+        - port: 8080
+          protocol: TCP
+  egress:
+    ## Allow DNS
+    - ports:
+        - port: 53
+          protocol: UDP
+        - port: 53
+          protocol: TCP
+    ## Allow connection to PostgreSQL
+    - to:
+        - podSelector:
+            matchLabels:
+              cnpg.io/cluster: cti-postgresql
+      ports:
+        - port: 5432
+          protocol: TCP
+{{- end }}

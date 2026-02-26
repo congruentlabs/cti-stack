@@ -1,0 +1,43 @@
+{{- if .Values.networkPolicy.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: cti-rabbitmq
+  labels:
+    app.kubernetes.io/name: rabbitmq
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: cti-rabbitmq
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        ## Allow from cti-opencti namespace
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: cti-opencti
+        ## Allow from cti-infra namespace
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: cti-infra
+      ports:
+        - port: 5671
+          protocol: TCP
+        - port: 15671
+          protocol: TCP
+  egress:
+    ## Allow DNS
+    - ports:
+        - port: 53
+          protocol: UDP
+        - port: 53
+          protocol: TCP
+    ## Allow inter-node communication (Erlang distribution)
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: cti-rabbitmq
+{{- end }}

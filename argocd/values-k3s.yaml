@@ -1,0 +1,6 @@
+## k3s profile overrides
+## Single-node deployment targeting 64GB RAM
+
+global:
+  clusterProfile: k3s
+  storageClass: local-path

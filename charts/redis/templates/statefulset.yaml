@@ -1,0 +1,141 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: cti-redis
+  labels:
+    app.kubernetes.io/name: redis
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  serviceName: cti-redis-headless
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: redis
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: redis
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      serviceAccountName: cti-redis
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 999
+        runAsGroup: 999
+        fsGroup: 999
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: redis
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.tls.enabled }}
+          command: ["redis-server", "/etc/redis/redis.conf", "--tls-port", "6380", "--port", "0", "--tls-cert-file", "/tls/tls.crt", "--tls-key-file", "/tls/tls.key", "--tls-ca-cert-file", "/tls/ca.crt"]
+          {{- else }}
+          command: ["redis-server", "/etc/redis/redis.conf"]
+          {{- end }}
+          ports:
+            {{- if .Values.tls.enabled }}
+            - name: redis-tls
+              containerPort: 6380
+              protocol: TCP
+            {{- else }}
+            - name: redis
+              containerPort: 6379
+              protocol: TCP
+            {{- end }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          livenessProbe:
+            exec:
+              command:
+                {{- if .Values.tls.enabled }}
+                - redis-cli
+                - -p
+                - "6380"
+                - --tls
+                - --cert
+                - /tls/tls.crt
+                - --key
+                - /tls/tls.key
+                - --cacert
+                - /tls/ca.crt
+                - ping
+                {{- else }}
+                - redis-cli
+                - ping
+                {{- end }}
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 5
+          readinessProbe:
+            exec:
+              command:
+                {{- if .Values.tls.enabled }}
+                - redis-cli
+                - -p
+                - "6380"
+                - --tls
+                - --cert
+                - /tls/tls.crt
+                - --key
+                - /tls/tls.key
+                - --cacert
+                - /tls/ca.crt
+                - ping
+                {{- else }}
+                - redis-cli
+                - ping
+                {{- end }}
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+          resources:
+            requests:
+              memory: {{ .Values.resources.requests.memory }}
+              cpu: {{ .Values.resources.requests.cpu | quote }}
+            limits:
+              memory: {{ .Values.resources.limits.memory }}
+          volumeMounts:
+            - name: redis-config
+              mountPath: /etc/redis
+            - name: redis-data
+              mountPath: /data
+            - name: tmp
+              mountPath: /tmp
+            {{- if .Values.tls.enabled }}
+            - name: tls
+              mountPath: /tls
+              readOnly: true
+            {{- end }}
+      volumes:
+        - name: redis-config
+          configMap:
+            name: cti-redis-config
+        - name: tmp
+          emptyDir:
+            medium: Memory
+        {{- if .Values.tls.enabled }}
+        - name: tls
+          secret:
+            secretName: cti-redis-tls
+        {{- end }}
+  {{- if .Values.persistence.enabled }}
+  volumeClaimTemplates:
+    - metadata:
+        name: redis-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        {{- if .Values.persistence.storageClass }}
+        storageClassName: {{ .Values.persistence.storageClass | quote }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.persistence.size }}
+  {{- end }}

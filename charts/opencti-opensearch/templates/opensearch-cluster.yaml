@@ -1,0 +1,61 @@
+apiVersion: opensearch.org/v1
+kind: OpenSearchCluster
+metadata:
+  name: {{ .Values.cluster.name }}
+  labels:
+    app.kubernetes.io/name: opensearch
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  general:
+    version: {{ .Values.cluster.version | quote }}
+    serviceName: {{ .Values.cluster.serviceName }}
+    httpPort: 9200
+    {{- with .Values.cluster.additionalConfig }}
+    additionalConfig:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with .Values.cluster.podSecurityContext }}
+    podSecurityContext:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with .Values.cluster.containerSecurityContext }}
+    containerSecurityContext:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+  security:
+    tls:
+      transport:
+        generate: {{ .Values.cluster.tls.transport.generate }}
+        perNode: true
+        secret:
+          name: {{ .Values.cluster.tls.transport.secret.name }}
+        nodesDn:
+          {{- toYaml .Values.cluster.nodesDn | nindent 10 }}
+        adminDn:
+          {{- toYaml .Values.cluster.adminDn | nindent 10 }}
+      http:
+        generate: {{ .Values.cluster.tls.http.generate }}
+        secret:
+          name: {{ .Values.cluster.tls.http.secret.name }}
+    config:
+      adminCredentialsSecret:
+        name: {{ .Values.cluster.security.adminCredentialsSecret.name }}
+      securityConfigSecret:
+        name: {{ .Values.cluster.security.securityConfigSecret.name }}
+      adminSecret:
+        name: {{ .Values.cluster.security.adminSecret.name }}
+  nodePools:
+    {{- range .Values.cluster.nodePools }}
+    - component: {{ .component }}
+      replicas: {{ .replicas }}
+      diskSize: {{ .diskSize | quote }}
+      {{- if .storageClass }}
+      pvc:
+        storageClass: {{ .storageClass }}
+      {{- end }}
+      roles:
+        {{- toYaml .roles | nindent 8 }}
+      resources:
+        {{- toYaml .resources | nindent 8 }}
+      jvm: {{ .jvm | quote }}
+    {{- end }}

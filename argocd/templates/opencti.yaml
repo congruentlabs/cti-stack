@@ -1,0 +1,9 @@
+{{- if .Values.components.opencti }}
+{{ include "cti-stack.application" (dict
+  "name" "cti-opencti"
+  "wave" "7"
+  "namespace" .Values.namespaces.opencti
+  "chart" "charts/opencti"
+  "context" $
+) }}
+{{- end }}

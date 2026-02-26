@@ -1,0 +1,5 @@
+apiVersion: v2
+name: mobsf
+description: Mobile Security Framework (MobSF) for CTI Stack
+version: 0.1.0
+appVersion: "4.1.3"

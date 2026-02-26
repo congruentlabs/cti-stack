@@ -1,0 +1,8 @@
+apiVersion: v2
+name: cti-stack
+description: App-of-Apps orchestrator for the CTI Stack (Azul, OpenCTI, MobSF)
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+maintainers:
+  - name: Congruent Labs

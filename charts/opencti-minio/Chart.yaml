@@ -1,0 +1,10 @@
+apiVersion: v2
+name: opencti-minio
+description: MinIO instance for OpenCTI object storage
+version: 0.1.0
+type: application
+
+dependencies:
+  - name: minio
+    version: 5.3.0
+    repository: https://charts.min.io/

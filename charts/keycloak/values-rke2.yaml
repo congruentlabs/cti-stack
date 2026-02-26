@@ -1,0 +1,8 @@
+keycloak:
+  replicas: 2
+  resources:
+    requests:
+      memory: 2Gi
+      cpu: "1"
+    limits:
+      memory: 4Gi

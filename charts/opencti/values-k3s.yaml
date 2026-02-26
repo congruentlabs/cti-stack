@@ -1,0 +1,14 @@
+opencti:
+  resources:
+    requests:
+      memory: 1.5Gi
+      cpu: 500m
+    limits:
+      memory: 3Gi
+  worker:
+    replicas: 1
+    resources:
+      requests:
+        memory: 256Mi
+      limits:
+        memory: 512Mi

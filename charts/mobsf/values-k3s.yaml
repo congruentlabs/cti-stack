@@ -1,0 +1,11 @@
+replicas: 1
+resources:
+  requests:
+    memory: 1Gi
+    cpu: 500m
+  limits:
+    memory: 2Gi
+djangoq:
+  replicas: 1
+persistence:
+  storageClass: local-path

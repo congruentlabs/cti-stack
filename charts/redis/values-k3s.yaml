@@ -1,0 +1,5 @@
+replicas: 1
+persistence:
+  storageClass: local-path
+sentinel:
+  enabled: false

@@ -1,0 +1,37 @@
+# Helm
+charts/*/charts/
+charts/*/tmpcharts/
+*.tgz
+
+# Secrets (never commit real secrets)
+secrets/
+secrets-generated.yaml
+*.dec
+*.key
+*.pem
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Terraform (if ever used)
+.terraform/
+*.tfstate*
+
+# Generated
+*.bak
+*.orig
+
+# Airgap artifacts
+images.txt
+airgap-images/
+airgap-bundle/
+airgap-bundle.tar.gz
+cti-airgap-images.tar.gz

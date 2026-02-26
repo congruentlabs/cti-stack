@@ -1,0 +1,17 @@
+cluster:
+  nodePools:
+    - component: nodes
+      replicas: 3
+      diskSize: 50Gi
+      storageClass: local-path
+      roles:
+        - cluster_manager
+        - data
+        - ingest
+      resources:
+        requests:
+          memory: 2Gi
+          cpu: 500m
+        limits:
+          memory: 3Gi
+      jvm: "-Xmx1g -Xms1g"

@@ -1,0 +1,5 @@
+minio:
+  mode: standalone
+  replicas: 1
+  persistence:
+    storageClass: local-path

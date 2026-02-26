@@ -1,0 +1,4 @@
+apiVersion: v2
+name: mobsf-prereqs
+description: Prerequisites (secrets/config) for MobSF deployment
+version: 0.1.0

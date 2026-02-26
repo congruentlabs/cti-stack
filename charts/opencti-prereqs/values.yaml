@@ -1,0 +1,45 @@
+global:
+  baseDomain: cti.local
+
+secrets:
+  admin:
+    email: admin@opencti.local
+    password: CHANGE_ME_OPENCTI_ADMIN_PASSWORD
+    token: CHANGE_ME_OPENCTI_ADMIN_TOKEN
+
+  opensearch:
+    url: https://opencti-opensearch.cti-opencti.svc:9200
+
+  rabbitmq:
+    hostname: cti-rabbitmq.cti-infra.svc
+    port: "5671"
+    username: guest
+    password: CHANGE_ME_RABBITMQ_PASSWORD
+    managementPort: "15671"
+    ssl: "true"
+
+  redis:
+    hostname: cti-redis.cti-infra.svc
+    port: "6380"
+    password: CHANGE_ME_REDIS_PASSWORD
+    ssl: "true"
+
+  minio:
+    endpoint: opencti-minio.cti-opencti.svc
+    port: "9000"
+    accessKey: CHANGE_ME_OPENCTI_MINIO_ACCESS_KEY
+    secretKey: CHANGE_ME_OPENCTI_MINIO_SECRET_KEY
+    bucket: opencti
+    useSsl: "true"
+
+  oidc:
+    issuerUrl: https://keycloak.cti.local/realms/cti
+    clientId: opencti
+    clientSecret: CHANGE_ME_OPENCTI_OIDC_SECRET
+
+  postgresql:
+    host: opencti-postgresql-rw.cti-opencti.svc
+    port: "5432"
+    database: opencti
+    username: opencti
+    password: CHANGE_ME_OPENCTI_PG_PASSWORD

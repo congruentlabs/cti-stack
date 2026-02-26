@@ -1,0 +1,30 @@
+{{- if .Values.networkPolicy.enabled }}
+{{- /*
+  ISM-1369: Security headers applied globally via ingress-nginx.
+  ISM-0408: Classification banner injected via server-snippet sub_filter.
+
+  These headers are applied as annotations on the ingress-nginx ConfigMap,
+  supplementing the controller.config values in values.yaml.
+*/ -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cti-ingress-security-headers
+  labels:
+    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: security-headers
+data:
+  ## ISM-1369: Security headers snippet for ingress-nginx
+  ## These are applied via the ingress-nginx controller config
+  X-Content-Type-Options: "nosniff"
+  X-Frame-Options: "SAMEORIGIN"
+  Referrer-Policy: "strict-origin-when-cross-origin"
+  Permissions-Policy: "camera=(), microphone=(), geolocation=(), payment=()"
+  Content-Security-Policy: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'self'"
+  ## ISM-0408: Classification banner configuration
+  ## The banner text is injected into all HTML responses via the ingress-nginx
+  ## server-snippet configuration below.
+  classification: {{ .Values.classification | default "PROTECTED" | quote }}
+  classification-banner: {{ .Values.classificationBanner | default "This system is classified PROTECTED. Unauthorised access is prohibited. All activity is monitored and logged." | quote }}
+{{- end }}

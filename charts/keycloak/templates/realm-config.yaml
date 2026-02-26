@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cti-keycloak-realm
+  labels:
+    app.kubernetes.io/name: keycloak
+    app.kubernetes.io/part-of: cti-stack
+data:
+  cti-realm.json: |
+    {
+      "realm": "{{ .Values.realm.name }}",
+      "displayName": "{{ .Values.realm.displayName }}",
+      "enabled": true,
+      "sslRequired": "external",
+      "registrationAllowed": false,
+      "loginWithEmailAllowed": true,
+      "duplicateEmailsAllowed": false,
+      "resetPasswordAllowed": true,
+      "editUsernameAllowed": false,
+      "bruteForceProtected": true,
+      "roles": {
+        "realm": [
+          {"name": "cti-admin", "description": "CTI Stack Administrator"},
+          {"name": "cti-analyst", "description": "CTI Analyst"},
+          {"name": "cti-viewer", "description": "CTI Read-only Viewer"}
+        ]
+      },
+      "clients": [
+        {{- $first := true }}
+        {{- range $key, $client := .Values.realm.clients }}
+        {{- if not $first }},{{ end }}
+        {
+          "clientId": "{{ $client.clientId }}",
+          "enabled": true,
+          "protocol": "openid-connect",
+          "publicClient": false,
+          "standardFlowEnabled": true,
+          "directAccessGrantsEnabled": false,
+          "rootUrl": "{{ $client.rootUrl }}",
+          "redirectUris": {{ $client.redirectUris | toJson }},
+          "webOrigins": {{ $client.webOrigins | toJson }},
+          "defaultClientScopes": ["openid", "profile", "email", "roles"]
+        }
+        {{- $first = false }}
+        {{- end }}
+      ],
+      "defaultDefaultClientScopes": ["openid", "profile", "email", "roles"]
+    }

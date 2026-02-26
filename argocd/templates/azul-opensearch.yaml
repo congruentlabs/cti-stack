@@ -1,0 +1,9 @@
+{{- if .Values.components.azulOpensearch }}
+{{ include "cti-stack.application" (dict
+  "name" "cti-azul-opensearch"
+  "wave" "4"
+  "namespace" .Values.namespaces.azul
+  "chart" "charts/azul-opensearch"
+  "context" $
+) }}
+{{- end }}
