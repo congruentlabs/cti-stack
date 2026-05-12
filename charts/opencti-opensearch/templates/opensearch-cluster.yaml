@@ -19,7 +19,7 @@ spec:
       {{- toYaml . | nindent 6 }}
     {{- end }}
     {{- with .Values.cluster.containerSecurityContext }}
-    containerSecurityContext:
+    securityContext:
       {{- toYaml . | nindent 6 }}
     {{- end }}
   security:
@@ -50,8 +50,9 @@ spec:
       replicas: {{ .replicas }}
       diskSize: {{ .diskSize | quote }}
       {{- if .storageClass }}
-      pvc:
-        storageClass: {{ .storageClass }}
+      persistence:
+        pvc:
+          storageClassName: {{ .storageClass | quote }}
       {{- end }}
       roles:
         {{- toYaml .roles | nindent 8 }}

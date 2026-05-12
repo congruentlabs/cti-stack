@@ -6,18 +6,27 @@
 ## After the initial deployment succeeds, set azul.pluginsEnabled=true in the
 ## ArgoCD values and re-sync.
 plugins:
-  yara-x:
-    type: yara-x
+  assemblyline:
+    enabled: false
+  dynamic:
     enabled: false
   maco:
-    type: maco
     enabled: false
-  suricata:
-    type: suricata
+  nsrl:
     enabled: false
-  generic:
-    type: standard
+  office:
+    enabled: false
+  report-feeds:
+    enabled: false
+  retrohunt:
+    enabled: false
+  tika:
     enabled: false
   virustotal:
-    type: standard
+    enabled: false
+  yara-x:
+    enabled: false
+  suricata:
+    enabled: false
+  generic:
     enabled: false

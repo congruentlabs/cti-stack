@@ -133,7 +133,7 @@ quay.io/keycloak/keycloak:26.0
 ghcr.io/cloudnative-pg/postgresql:16.4
 redis:7.4
 rabbitmq:3.13-management
-opensecurity/mobile-security-framework-mobsf:v4.1.3
+opensecurity/mobile-security-framework-mobsf:v4.4.6
 quay.io/jetstack/cert-manager-controller:v1.17.1
 quay.io/jetstack/cert-manager-webhook:v1.17.1
 quay.io/jetstack/cert-manager-cainjector:v1.17.1

@@ -43,6 +43,8 @@ spec:
           env:
             - name: MOBSF_DB_TYPE
               value: postgres
+            - name: MOBSF_ASYNC_ANALYSIS
+              value: "1"
             - name: POSTGRES_HOST
               valueFrom:
                 secretKeyRef:
@@ -73,6 +75,33 @@ spec:
                 secretKeyRef:
                   name: mobsf-credentials
                   key: secret-key
+            {{- if .Values.sso.enabled }}
+            - name: MOBSF_IDP_METADATA_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.sso.existingSecret }}
+                  key: idp-metadata-url
+            - name: MOBSF_IDP_ENTITY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.sso.existingSecret }}
+                  key: idp-entity-id
+            - name: MOBSF_IDP_SSO_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.sso.existingSecret }}
+                  key: idp-sso-url
+            - name: MOBSF_IDP_X509CERT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.sso.existingSecret }}
+                  key: idp-x509cert
+            - name: MOBSF_SP_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.sso.existingSecret }}
+                  key: sp-host
+            {{- end }}
           volumeMounts:
             - name: data
               mountPath: /home/mobsf/.MobSF

@@ -49,6 +49,8 @@ namespaces:
 
 ## Azul-specific settings
 azul:
+  ## Stable upstream Azul chart/app tag. Use azul-9.0.1 if you need to stay on v9.
+  targetRevision: azul-10.0.0
   ## Set to true after initial deployment succeeds to enable plugins
   pluginsEnabled: false
 

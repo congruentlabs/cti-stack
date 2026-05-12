@@ -17,7 +17,6 @@ cluster:
       max_connections: "50"
       shared_buffers: 64MB
       effective_cache_size: 128MB
-      ssl: "on"
       ssl_min_protocol_version: "TLSv1.3"
 
 bootstrap:

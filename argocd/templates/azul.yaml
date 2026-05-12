@@ -19,7 +19,7 @@ spec:
   sources:
     ## Source 1: Upstream Azul Helm chart
     - repoURL: https://github.com/AustralianCyberSecurityCentre/azul-app.git
-      targetRevision: main
+      targetRevision: {{ .Values.azul.targetRevision | default "azul-10.0.0" }}
       path: azul
       helm:
         ignoreMissingValueFiles: true

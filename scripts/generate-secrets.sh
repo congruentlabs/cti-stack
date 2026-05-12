@@ -128,6 +128,7 @@ RABBITMQ_PASSWORD="$(rand_alphanum 32)"
 
 # --- Redis (ISM-1469: authentication) ---
 REDIS_PASSWORD="$(rand_alphanum 32)"
+AZUL_REDIS_PASSWORD="$(rand_alphanum 32)"
 
 # --- OpenCTI ---
 OPENCTI_ADMIN_PASSWORD="$(rand_alphanum 24)"
@@ -285,6 +286,9 @@ azulPrereqs:
       writerPassword: "${OPENSEARCH_AZUL_WRITER_PASSWORD}"
       jwtSigningSecret: "${AZUL_JWT_SIGNING_SECRET}"
       securityPassword: "${OPENSEARCH_AZUL_SECURITY_PASSWORD}"
+    redis:
+      username: "default"
+      password: "${AZUL_REDIS_PASSWORD}"
 
 ## ---------------------------------------------------------------------------
 ## charts/opencti-prereqs

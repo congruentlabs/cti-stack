@@ -34,7 +34,8 @@ spec:
         - name: djangoq
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["python", "manage.py", "qcluster"]
+          command:
+            - /home/mobsf/Mobile-Security-Framework-MobSF/scripts/qcluster.sh
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: false
