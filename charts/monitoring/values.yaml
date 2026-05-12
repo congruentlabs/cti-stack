@@ -47,6 +47,7 @@ kube-prometheus-stack:
 
   grafana:
     enabled: true
+    assertNoLeakedSecrets: false
     adminPassword: CHANGE_ME_GRAFANA_ADMIN_PASSWORD
     ingress:
       enabled: true

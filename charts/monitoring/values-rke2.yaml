@@ -28,15 +28,15 @@ kube-prometheus-stack:
         memory: 1Gi
 
 loki:
-  deploymentMode: SimpleScalable
+  deploymentMode: SingleBinary
   singleBinary:
-    replicas: 0
+    replicas: 1
   read:
-    replicas: 2
+    replicas: 0
   write:
-    replicas: 2
+    replicas: 0
   backend:
-    replicas: 2
+    replicas: 0
   loki:
     commonConfig:
-      replication_factor: 2
+      replication_factor: 1

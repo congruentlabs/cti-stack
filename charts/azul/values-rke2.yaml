@@ -2,44 +2,30 @@
 
 storageClassName: longhorn
 
-api:
-  replicas: 2
+restapi:
+  minReplicas: 2
+  maxReplicas: 5
   resources:
     requests:
       memory: 4Gi
       cpu: "1"
     limits:
       memory: 8Gi
-  autoscaling:
-    enabled: true
-    minReplicas: 2
-    maxReplicas: 5
-    targetCPUUtilizationPercentage: 70
-
-dispatcher:
-  replicas: 2
-  resources:
-    requests:
-      memory: 2Gi
-      cpu: "1"
-    limits:
-      memory: 4Gi
-  autoscaling:
-    enabled: true
-    minReplicas: 2
-    maxReplicas: 10
-    targetCPUUtilizationPercentage: 70
+      cpu: "2"
 
 plugins:
-  yarax:
+  yara-x:
+    type: yara-x
     enabled: true
   maco:
+    type: maco
     enabled: true
   suricata:
+    type: suricata
     enabled: true
-  tika:
-    enabled: true
-  capa:
+  generic:
+    type: standard
     enabled: true
   virustotal:
+    type: standard
     enabled: true

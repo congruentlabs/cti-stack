@@ -35,7 +35,7 @@ keycloak:
       - secretName: keycloak-tls
         hosts:
           - keycloak.{{ .Values.global.baseDomain }}
-  extraEnv:
+  extraEnv: |
     - name: KC_HOSTNAME
       value: keycloak.{{ .Values.global.baseDomain }}
     - name: KC_PROXY

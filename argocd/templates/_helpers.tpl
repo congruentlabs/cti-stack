@@ -53,6 +53,7 @@ spec:
     targetRevision: {{ .context.Values.global.targetRevision }}
     path: {{ .chart }}
     helm:
+      ignoreMissingValueFiles: true
       valueFiles:
         - values.yaml
         {{- if eq .context.Values.global.clusterProfile "k3s" }}
@@ -77,10 +78,11 @@ spec:
     syncOptions:
       - CreateNamespace=false
       - ServerSideApply=true
+      - SkipDryRunOnMissingResource=true
     retry:
-      limit: 5
+      limit: 30
       backoff:
         duration: 5s
         factor: 2
-        maxDuration: 3m
+        maxDuration: 5m
 {{- end }}

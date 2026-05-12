@@ -2,35 +2,30 @@
 
 storageClassName: local-path
 
-api:
-  replicas: 1
+restapi:
+  minReplicas: 1
+  maxReplicas: 1
   resources:
     requests:
       memory: 2Gi
       cpu: 500m
     limits:
       memory: 4Gi
-
-dispatcher:
-  replicas: 1
-  resources:
-    requests:
-      memory: 1Gi
-      cpu: 500m
-    limits:
-      memory: 2Gi
+      cpu: 1000m
 
 plugins:
-  yarax:
+  yara-x:
+    type: yara-x
     enabled: true
   maco:
+    type: maco
     enabled: true
   suricata:
+    type: suricata
     enabled: true
-  tika:
-    enabled: true
-  # Disabled on k3s to save resources
-  capa:
+  generic:
+    type: standard
     enabled: false
   virustotal:
+    type: standard
     enabled: false

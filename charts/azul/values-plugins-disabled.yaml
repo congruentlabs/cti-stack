@@ -1,8 +1,23 @@
-## Plugins-disabled overlay — loaded LAST in ArgoCD to override profile plugin
+## Plugins-disabled overlay - loaded LAST in ArgoCD to override profile plugin
 ## settings during initial deployment and upgrades.
 ##
 ## Azul requires plugins to be disabled for the first sync so that the
 ## metastore schema can be initialised without plugin interference.
 ## After the initial deployment succeeds, set azul.pluginsEnabled=true in the
 ## ArgoCD values and re-sync.
-pluginsEnabled: false
+plugins:
+  yara-x:
+    type: yara-x
+    enabled: false
+  maco:
+    type: maco
+    enabled: false
+  suricata:
+    type: suricata
+    enabled: false
+  generic:
+    type: standard
+    enabled: false
+  virustotal:
+    type: standard
+    enabled: false

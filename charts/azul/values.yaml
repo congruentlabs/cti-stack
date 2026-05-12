@@ -13,14 +13,20 @@ external:
   opensearch:
     endpoint: "https://azul-opensearch.cti-azul.svc:9200"
     username: azul_writer
+    partition: default01
 
   filestore:
     backend: s3
     endpoint: "azul-minio.cti-azul.svc:9000"
+    location: azul
     secure: true
+    xorEncoding: true
 
   kafka:
     endpoint: "cti-kafka-kafka-bootstrap.cti-infra.svc:9093"
+    consumerGroupRetentionDays: 30
+    topicDefaultReplicas: 1
+    topicDefaultPartitions: 1
 
   redis:
     endpoint: "azul-redis-master:6379"
@@ -36,27 +42,38 @@ security:
     enabled: true
     authority_url: "https://keycloak.cti.local/realms/cti"
     client_id: azul
+    scopes: "openid profile email roles"
 
 ## Web ingress
 web:
   ingress:
     enabled: true
-    className: nginx
+    ingressClassName: nginx
     annotations:
       cert-manager.io/cluster-issuer: cti-ca-issuer
     hosts:
       - azul.cti.local
-    tls:
-      - secretName: azul-tls
-        hosts:
-          - azul.cti.local
+    secretName: azul-tls
+    security:
+      enableHarden: true
+      csp: {}
 
 ## Namespace is managed by ArgoCD, not the chart
 namespace:
   create: false
   secure: false
 
-## At least one source must be enabled
+## At least one source must be defined for manual submissions.
 sources:
   manual:
-    enabled: true
+    partition_unit: all
+    description: Manual submissions to the CTI Stack malware analysis queue
+    elastic:
+      number_of_replicas: 0
+      number_of_shards: 1
+    icon_class: upload
+    references:
+      - name: user
+        description: Submitter or point of contact for the sample
+        required: true
+        highlight: true
