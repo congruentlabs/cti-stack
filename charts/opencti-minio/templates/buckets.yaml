@@ -27,12 +27,12 @@ spec:
           args:
             - |
               {{- if .Values.minio.tls.enabled }}
-              mc alias set myminio https://{{ .Release.Name }}-minio:9000 $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD --insecure
+              mc alias set myminio https://{{ .Release.Name }}:9000 $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD --insecure
               {{- range .Values.buckets }}
               mc mb --ignore-existing myminio/{{ .name }} --insecure
               {{- end }}
               {{- else }}
-              mc alias set myminio http://{{ .Release.Name }}-minio:9000 $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD
+              mc alias set myminio http://{{ .Release.Name }}:9000 $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD
               {{- range .Values.buckets }}
               mc mb --ignore-existing myminio/{{ .name }}
               {{- end }}
@@ -47,12 +47,12 @@ spec:
             - name: MINIO_ROOT_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Release.Name }}-minio
+                  name: {{ .Release.Name }}
                   key: rootUser
             - name: MINIO_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Release.Name }}-minio
+                  name: {{ .Release.Name }}
                   key: rootPassword
           volumeMounts:
             - name: tmp

@@ -53,6 +53,17 @@ azul:
   targetRevision: azul-10.0.0
   ## Set to true after initial deployment succeeds to enable plugins
   pluginsEnabled: false
+  ## Optional CTI Stack custom Azul plugins. Enable only after the images are
+  ## published and pinned to immutable digests.
+  customPlugins:
+    enabled: false
+    images:
+      mobsf: ghcr.io/congruentlabs/azul-plugin-mobsf:latest@sha256:ab2857b223d55529c68336e0e43bd635c6852b8f0a43e9a0a8da6ba5a026c303
+      opencti: ghcr.io/congruentlabs/azul-plugin-opencti:latest@sha256:4a18187f3c63de301270f0c5de001c30bc631a3fbdccb798da6b2c7185cf873d
+      openctiFeed: ghcr.io/congruentlabs/azul-plugin-opencti-feed:latest@sha256:aff327b6facbbabd2c53e22eb464df79999f2bf075f69bb2390c3156bed8b4b0
+    endpoints:
+      mobsf: "https://mobsf.cti.local"
+      opencti: "https://opencti.cti.local"
 
 ## Application toggles
 ## Enable/disable each application and its dedicated data services.

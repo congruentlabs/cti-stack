@@ -12,5 +12,8 @@ secrets:
   redis:
     username: default
     password: CHANGE_ME
+  ctiPlugins:
+    openctiToken: CHANGE_ME
+    mobsfApiKey: CHANGE_ME
 
 caCert: CHANGE_ME

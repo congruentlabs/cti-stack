@@ -1,0 +1,54 @@
+## CTI Stack custom Azul plugins.
+##
+## This overlay is included by the ArgoCD app only when
+## azul.customPlugins.enabled=true. Image refs are supplied from argocd values
+## so deployments can pin immutable GHCR digests without editing this file.
+
+plugins:
+  cti-stack:
+    type: standard
+    enabled: true
+    config:
+      CTI_STACK_ENABLED: "true"
+    plugins:
+      mobsf:
+        image: plugin-mobsf
+        config:
+          MOBSF_URL: https://mobsf.cti.local
+        envFrom:
+          - secretRef:
+              name: azul-cti-plugin-credentials
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            memory: 512Mi
+
+      opencti:
+        image: plugin-opencti
+        config:
+          OPENCTI_URL: https://opencti.cti.local
+        envFrom:
+          - secretRef:
+              name: azul-cti-plugin-credentials
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            memory: 512Mi
+
+      opencti-feed:
+        image: plugin-opencti-feed
+        config:
+          OPENCTI_URL: https://opencti.cti.local
+        envFrom:
+          - secretRef:
+              name: azul-cti-plugin-credentials
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            memory: 512Mi

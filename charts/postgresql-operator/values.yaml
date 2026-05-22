@@ -2,4 +2,8 @@
 ## CloudNativePG Operator — subchart values
 ## Deploys only the operator; CNPG Cluster CRs are in per-app charts
 ## ---------------------------------------------------------------------------
-## Operator defaults are sufficient — no overrides needed
+cloudnative-pg:
+  ## k3s-in-WSL2 has unreliable API-server-to-pod webhook routing. Host networking
+  ## keeps the CNPG admission webhooks reachable while preserving the webhook objects
+  ## the operator expects for its PKI setup.
+  hostNetwork: true

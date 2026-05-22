@@ -19,6 +19,10 @@ minio:
       purge: false
   tls:
     enabled: true
+    certSecret: opencti-minio-tls
+    publicCrt: tls.crt
+    privateKey: tls.key
+  trustedCertsSecret: opencti-minio-tls
   serviceAccount:
     create: true
   securityContext:

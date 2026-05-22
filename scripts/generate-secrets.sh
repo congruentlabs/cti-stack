@@ -166,6 +166,7 @@ OIDC_GRAFANA_SECRET="$(rand_uuid)"
 
 # --- MobSF ---
 MOBSF_SECRET_KEY="$(rand_alphanum 50)"
+MOBSF_API_KEY="$(rand_alphanum 40)"
 
 ###############################################################################
 # Write the values file
@@ -289,6 +290,9 @@ azulPrereqs:
     redis:
       username: "default"
       password: "${AZUL_REDIS_PASSWORD}"
+    ctiPlugins:
+      openctiToken: "${OPENCTI_ADMIN_TOKEN}"
+      mobsfApiKey: "${MOBSF_API_KEY}"
 
 ## ---------------------------------------------------------------------------
 ## charts/opencti-prereqs
@@ -322,32 +326,3 @@ echo "  Secrets generated successfully!"
 echo "  Output: ${OUTPUT_FILE}"
 echo "============================================================================"
 echo ""
-echo "Next steps:"
-echo ""
-echo "  1. Review the generated file to ensure all values look correct."
-echo ""
-echo "  2. For k3s deployments, pass the file to ArgoCD or Helm:"
-echo ""
-echo "     helm upgrade --install cti-stack argocd/ \\"
-echo "       -f argocd/values.yaml \\"
-echo "       -f argocd/values-k3s.yaml \\"
-echo "       -f ${OUTPUT_FILE}"
-echo ""
-echo "  3. For RKE2 deployments:"
-echo ""
-echo "     helm upgrade --install cti-stack argocd/ \\"
-echo "       -f argocd/values.yaml \\"
-echo "       -f argocd/values-rke2.yaml \\"
-echo "       -f ${OUTPUT_FILE}"
-echo ""
-echo "  4. IMPORTANT: Do NOT commit this file to version control."
-echo "     Add 'secrets-generated.yaml' to your .gitignore."
-echo ""
-echo "  5. Extract the CA certificate and inject it into azul-prereqs:"
-echo ""
-echo "     kubectl get secret cti-ca-tls -n cti-infra -o jsonpath='{.data.ca\\.crt}' | base64 -d > ca.crt"
-echo "     # Then set azulPrereqs.caCert in your values override to the contents of ca.crt"
-echo ""
-echo "  6. For production environments, consider using Sealed Secrets,"
-echo "     External Secrets Operator, or HashiCorp Vault instead."
-echo "============================================================================"

@@ -19,6 +19,10 @@ minio:
       purge: false
   tls:
     enabled: true
+    certSecret: azul-minio-tls
+    publicCrt: tls.crt
+    privateKey: tls.key
+  trustedCertsSecret: azul-minio-tls
   serviceAccount:
     create: true
   securityContext:

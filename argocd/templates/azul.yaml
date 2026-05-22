@@ -30,6 +30,9 @@ spec:
           {{- else if eq .Values.global.clusterProfile "rke2" }}
           - $values/charts/azul/values-rke2.yaml
           {{- end }}
+          {{- if .Values.azul.customPlugins.enabled }}
+          - $values/charts/azul/values-cti-plugins.yaml
+          {{- end }}
           {{- if not .Values.azul.pluginsEnabled }}
           - $values/charts/azul/values-plugins-disabled.yaml
           {{- end }}
@@ -44,6 +47,20 @@ spec:
             value: azul-tls
           - name: security.oidc.authority_url
             value: https://keycloak.{{ .Values.global.baseDomain }}/realms/cti
+          {{- if .Values.azul.customPlugins.enabled }}
+          - name: images.custom.plugin-mobsf
+            value: {{ required "azul.customPlugins.images.mobsf is required when azul.customPlugins.enabled=true" .Values.azul.customPlugins.images.mobsf | quote }}
+          - name: images.custom.plugin-opencti
+            value: {{ required "azul.customPlugins.images.opencti is required when azul.customPlugins.enabled=true" .Values.azul.customPlugins.images.opencti | quote }}
+          - name: images.custom.plugin-opencti-feed
+            value: {{ required "azul.customPlugins.images.openctiFeed is required when azul.customPlugins.enabled=true" .Values.azul.customPlugins.images.openctiFeed | quote }}
+          - name: plugins.cti-stack.plugins.mobsf.config.MOBSF_URL
+            value: {{ .Values.azul.customPlugins.endpoints.mobsf | quote }}
+          - name: plugins.cti-stack.plugins.opencti.config.OPENCTI_URL
+            value: {{ .Values.azul.customPlugins.endpoints.opencti | quote }}
+          - name: plugins.cti-stack.plugins.opencti-feed.config.OPENCTI_URL
+            value: {{ .Values.azul.customPlugins.endpoints.opencti | quote }}
+          {{- end }}
     ## Source 2: This repo (values overlays)
     - repoURL: {{ .Values.global.repoURL }}
       targetRevision: {{ .Values.global.targetRevision }}

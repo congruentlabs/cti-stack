@@ -5,6 +5,8 @@
 ## metastore schema can be initialised without plugin interference.
 ## After the initial deployment succeeds, set azul.pluginsEnabled=true in the
 ## ArgoCD values and re-sync.
+pluginsEnabled: false
+
 plugins:
   assemblyline:
     enabled: false
